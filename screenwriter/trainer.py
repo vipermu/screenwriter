@@ -70,7 +70,7 @@ for epoch in range(NUM_EPOCHS):
             model.zero_grad()
             
         if iteration % METRICS_FREQ == 0:
-            sentence_list = generate_sentences(model)
+            sentence_list = generate_sentences(model, tokenizer)
             for sentence_idx, sentence in enumerate(sentence_list):
                 print(f"Sentence {sentence_idx}: {sentence}")
 

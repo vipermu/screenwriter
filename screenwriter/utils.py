@@ -1,11 +1,12 @@
 import random
 from typing import *
 
-from transformers import GPT2LMHeadModel
+from transformers import GPT2LMHeadModel, GPT2Tokenizer
 
 
 def generate_sentences(
     model: GPT2LMHeadModel,
+    tokenizer: GPT2Tokenizer,
     top_k: int = 50,
     top_p: float = 0.95,
     max_length: int = 200,
@@ -33,3 +34,7 @@ def generate_sentences(
     model.train()
 
     return sentence_list
+
+
+
+
