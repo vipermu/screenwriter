@@ -56,7 +56,6 @@ iteration = 1
 for epoch in range(NUM_EPOCHS):
     print(f"EPOCH {epoch} started" + '=' * 30)
     for idx, data in enumerate(data_loader):
-        print(idx)
         data = data.to(DEVICE)
         outputs = model(data, labels=data)
         loss, logits = outputs[:2]                        
