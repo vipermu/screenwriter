@@ -1,6 +1,7 @@
 import os
 import glob
 import pickle
+import re
 from typing import *
 
 import torch
@@ -26,25 +27,86 @@ class ScreenwriterData(torch.utils.data.Dataset):
             if os.path.exists(cache_file_path) and not recompute:
                 print(f"Loading cached data from {cache_file_path}...")
                 with open(cache_file_path, "rb") as cache_file:
-                    token_id_list = pickle.load(cache_file)
+                    tokenized_lines = pickle.load(cache_file)
 
             else:
                 print(f"Processing {txt_file_path}...")
                 with open(txt_file_path) as txt_file:
-                    text = txt_file.read()
-                    token_id_list = tokenizer.encode(text)
-                    token_id_list = tokenizer.build_inputs_with_special_tokens(
-                        token_id_list)
+                    text_lines = txt_file.readlines()
+                    _processed_lines, tokenized_lines = self.process_lines(
+                        text_lines=text_lines,
+                        tokenizer=tokenizer,
+                    )
 
                 print(f"Storing processed tokens in {cache_file_path}...")
                 with open(cache_file_path, "wb") as cache_file:
-                    pickle.dump(token_id_list, cache_file)
+                    pickle.dump(tokenized_lines, cache_file)
 
             print(f"Creating blocks of {block_size} tokens...")
-            for block_id in tqdm(range(0, len(token_id_list), block_size)):
-                if block_id + block_size < len(token_id_list):
-                    self.block_token_list.append(
-                        token_id_list[block_id:block_id+block_size])
+
+            cached_tokenized_line = []
+            for tokenized_line in tokenized_lines: 
+                cached_tokenized_line.extend(tokenized_line)
+
+                if len(cached_tokenized_line) >= block_size:
+                    block_tokenized_line = cached_tokenized_line[0:block_size]
+                    self.block_token_list.append(block_tokenized_line)
+
+                    cached_tokenized_line = tokenized_line
+
+
+    @staticmethod
+    def process_lines(
+        text_lines: List[str],
+        tokenizer: GPT2Tokenizer,
+    ) -> Tuple[List[str], List[int]]:
+        """
+        Process a list of lines removing extra spaces, pagination
+        lines and organizing line jumps (i.e. `\n`) to be at the 
+        end of each line.
+        
+        Args:
+            text_lines (List[str]): list containing the lines to
+                be processed.
+
+        Returns:
+            Tuple[List[str], List[int]]: tuple containing a list 
+                of the processed lines and a list with the tokens 
+                computed from these lines.
+        """            
+        processed_lines = []
+        tokenized_lines = []
+
+        cached_line = ""
+        line_ended = False
+        for line in text_lines:
+            line = line.strip()
+            
+            #NOTE: remove pagination
+            if re.search("^\d+\.", line) is not None:
+                continue
+
+            if line == "":
+                if cached_line:
+                    cached_line += " \n"
+                line_ended = True
+
+            else:
+                if line_ended and cached_line:
+                    processed_lines.append(cached_line)
+
+                    tokenized_line = tokenizer.encode(cached_line)
+                    tokenized_lines.append(tokenized_line)
+
+                    cached_line = ""
+                    line_ended = False
+                    
+                if not cached_line:
+                    cached_line = line
+                else:
+                    cached_line += f" {line}"
+        
+        return processed_lines, tokenized_lines
 
     def __len__(self):
         return len(self.block_token_list)
