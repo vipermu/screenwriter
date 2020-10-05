@@ -13,6 +13,16 @@
             "env": {
                 "PYTHONPATH": "."
             }
+        },
+        {
+            "name": "Trainer",
+            "type": "python",
+            "request": "launch",
+            "program": "screenwriter/trainer.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "."
+            }
         }
     ]
 }
