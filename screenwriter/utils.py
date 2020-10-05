@@ -12,8 +12,6 @@ def generate_sentences(
     max_length: int = 200,
     num_return_sequences: int = 1,
 ) -> List[str]:
-    model.eval()
-
     sample_outputs = model.generate(
         bos_token_id=random.randint(1, 30000),
         do_sample=True,
@@ -30,8 +28,6 @@ def generate_sentences(
             skip_special_tokens=True,
         )
         sentence_list.append(sentence)
-
-    model.train()
 
     return sentence_list
 

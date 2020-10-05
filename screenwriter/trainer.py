@@ -55,26 +55,28 @@ scheduler = get_linear_schedule_with_warmup(
 iteration = 1
 for epoch in range(NUM_EPOCHS):
     print(f"EPOCH {epoch} started" + '=' * 30)
+
     for idx, data in enumerate(data_loader):
         data = data.to(DEVICE)
         outputs = model(data, labels=data)
-        loss, logits = outputs[:2]                        
+        loss, logits = outputs[:2]
 
         loss.backward()
-                       
+
         if iteration % BATCH_SIZE == 0:
             optimizer.step()
-            scheduler.step() 
+            scheduler.step()
 
             optimizer.zero_grad()
             model.zero_grad()
-            
+
         if iteration % METRICS_FREQ == 0:
+            model.eval()
+
             sentence_list = generate_sentences(model, tokenizer)
             for sentence_idx, sentence in enumerate(sentence_list):
                 print(f"Sentence {sentence_idx}: {sentence}")
 
+            model.train()
+
         iteration = iteration + 1
-
-
-
