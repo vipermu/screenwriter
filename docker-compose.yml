@@ -1,0 +1,11 @@
+version: "3"
+services:
+  screenwriter:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: screenwriter
+    volumes:
+      - .:/screenwriter
+    environment:
+      - PYTHONPATH=.
