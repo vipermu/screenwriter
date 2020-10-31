@@ -1,6 +1,9 @@
 __pycache__
 
-data/*txt
-data/*pkl
-
 .vscode/settings.json
+
+scraper/extracted-data/*
+
+screenwriter/data/*
+screenwriter/checkpoints/*
+screenwriter/tensorboard-logs/*
