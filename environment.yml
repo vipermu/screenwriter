@@ -9,4 +9,6 @@ dependencies:
   - python=3.8.5
   - transformers=3.1.0
   - pip:
-    - lxml==4.5.2
+      - lxml==4.5.2
+      - str2bool==1.1
+      - quoters==0.7

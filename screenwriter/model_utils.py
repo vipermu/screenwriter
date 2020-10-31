@@ -11,9 +11,13 @@ def generate_sentences(
     top_p: float = 0.95,
     max_length: int = 200,
     num_return_sequences: int = 1,
+    prompt_tokens: str = None
 ) -> List[str]:
+    if prompt_tokens is None:
+        prompt_tokens =  random.randint(1,30000)
+
     sample_outputs = model.generate(
-        bos_token_id=random.randint(1, 30000),
+        input_ids=prompt_tokens,
         do_sample=True,
         top_k=50,
         top_p=0.95,
@@ -27,10 +31,8 @@ def generate_sentences(
             sample_output,
             skip_special_tokens=True,
         )
+
+        sentence = f"\n{sentence}"
         sentence_list.append(sentence)
 
     return sentence_list
-
-
-
-

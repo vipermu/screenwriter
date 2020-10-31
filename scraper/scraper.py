@@ -11,7 +11,7 @@ def main():
     # Comedy	Crime	Drama Family	Fantasy	Film-Noir
     # Horror	Musical	Mystery Romance	Sci-Fi	Short
     # Thriller	War	Western
-    output_path = "./script-data.txt"
+    output_path = "./extracted-data/script-data.txt"
     genre = "Horror"
     base_url = "https://www.imsdb.com/"
     genre_url = os.path.join(base_url, "genre", genre)
