@@ -5,6 +5,7 @@ RUN apt update && \
                    build-essential \
                    git \
                    curl \
+                   wget \
                    ca-certificates \
                    python3 \
                    python3-pip && \
@@ -21,26 +22,22 @@ RUN cd apex && \
     pip install -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" ./
 
 # INSTALLATION OF CONDA
-ARG PYTHON_VERSION=3.7
-ARG CONDA_VERSION=3
-ARG CONDA_PY_VERSION=4.5.11
-
-ENV PATH /opt/conda/bin:$PATH
-RUN wget — quiet https://repo.anaconda.com/miniconda/Miniconda$ CONDA_VERSION-$ CONDA_PY_VERSION-Linux-x86_64.sh -O ~/miniconda.sh && \
-    /bin/bash ~/miniconda.sh -b -p /opt/conda && \
-    rm ~/miniconda.sh && \
-    /opt/conda/bin/conda clean -tipsy && \
-    ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
-    echo “. /opt/conda/etc/profile.d/conda.sh” >> ~/.bashrc && \
-    echo “conda activate base” >> ~/.bashrc
+ENV PATH="/root/miniconda3/bin:${PATH}"
+ARG PATH="/root/miniconda3/bin:${PATH}"
+RUN wget \
+    https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
+    && mkdir /root/.conda \
+    && bash Miniconda3-latest-Linux-x86_64.sh -b \
+    && rm -f Miniconda3-latest-Linux-x86_64.sh 
 
 ENV TINI_VERSION v0.16.1
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
 RUN chmod +x /usr/bin/tini
 
-# RUN conda update -n base -c defaults conda && \
-#     conda env create -f /screenwriter/environment.yml
+COPY . /screenwriter
+
 RUN conda env create -f /screenwriter/environment.yml
+RUN echo "source activate script" > ~/.bashrc
 ENV PATH /opt/conda/envs/script/bin:$PATH
 
-WORKDIR /screenwriter
+CMD tail -f /dev/null

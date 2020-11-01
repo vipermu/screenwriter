@@ -5,7 +5,5 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: screenwriter
-    volumes:
-      - .:/screenwriter
     environment:
       - PYTHONPATH=.
