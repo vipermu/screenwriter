@@ -27,6 +27,9 @@ class ScreenwriterData(torch.utils.data.Dataset):
 
         self.block_token_list = []
         for txt_file_path in txt_file_path_list:
+            if 'test' in txt_file_path:
+                continue
+
             pkl_filename = txt_file_path.split("/")[-1].split(".")[-2] + "-tokens.pkl"
             cache_file_path = os.path.join(out_dir, pkl_filename)
 
@@ -70,7 +73,7 @@ class ScreenwriterData(torch.utils.data.Dataset):
         Process a list of lines with the following rules:
         - If line is blank: pass, do nothing.
         - If line contain text:
-            - If text is the start of a dialog: append the current 
+            - If text is not dialog: append the current 
                 line and continue.
             - Else:
                 1. Iterate and append to the current sentence until 

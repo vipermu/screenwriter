@@ -4,7 +4,6 @@ import json
 from typing import *
 
 import torch
-import numpy as np
 from torch.utils.data import DataLoader
 from transformers import GPT2Tokenizer, GPT2LMHeadModel, AdamW, get_linear_schedule_with_warmup
 from torch.utils.tensorboard import SummaryWriter
@@ -34,7 +33,7 @@ args = get_args()
 logger.info(json.dumps(args.__dict__, indent=2))
 logger.info((
     f"Training in '{device}' "
-    f"with {num_gpu} GPUs "
+    f"with {num_gpu} GPU{'s'*(num_gpu > 1)} " 
     f"and mix precision is set to '{args.use_fp16}'"
 ))
 
@@ -72,35 +71,41 @@ scheduler = get_linear_schedule_with_warmup(
     num_training_steps=-1,
 )
 
-prompt_tokens = tokenizer.encode(args.prompt, return_tensors="pt")
-prompt_tokens.to(device)
+prompt_tokens = None
+if args.prompt != "":
+    prompt_tokens = tokenizer.encode(args.prompt, return_tensors="pt")
+    prompt_tokens = prompt_tokens.to(device)
 
 iteration = 1
 for epoch in range(args.num_epochs):
     logger.info(f"EPOCH {epoch} started -- {Quote.print()}")
 
-    for idx, data in enumerate(data_loader):
-        data = data.to(device)
-        outputs = model(data, labels=data)
-        loss, logits = outputs[:2]
+    for data_batch in data_loader:
+        data_batch = data_batch.to(device)
+        outputs = model(data_batch, labels=data_batch)
+        loss, _logits = outputs[:2]
 
+        # loss /= args.num_grad_accum
         loss.backward()
 
         if iteration % args.num_grad_accum == 0:
             optimizer.step()
             scheduler.step()
-
             optimizer.zero_grad()
-            model.zero_grad()
+            # model.zero_grad()
 
         if iteration % args.metrics_freq == 0:
+            logger.info("\n\n")
             logger.info(f"ITERATION: {iteration}")
 
-            loss_float = float(loss.data.cpu())
+            loss_float = float(loss.data.cpu()) * args.num_grad_accum
             logger.info(f"LOSS: {loss_float}")
             writer.add_scalar("Loss/train", loss_float, iteration)
 
             model.eval()
+
+            if prompt_tokens is None:
+                prompt_tokens = data_batch[0][None]
 
             sentence_list = generate_sentences(
                 model=model,
@@ -113,11 +118,15 @@ for epoch in range(args.num_epochs):
 
             model.train()
 
+            logger.info("\n\n")
+
         iteration = iteration + 1
 
-    if (epoch + 1) % args.saving_freq == 0:
-        model_save_dir = os.path.join(args.save_dir, str(epoch))
-        model.save_pretrained(model_save_dir)
-        logger.info("Model saved!")
+        if iteration % args.saving_freq == 0:
+            model_save_dir = os.path.join(args.save_dir, f"{epoch}_{iteration}")
+            model.save_pretrained(model_save_dir)
+            logger.info("\n\n")
+            logger.info("Model saved!")
+            logger.info("\n\n")
 
 writer.close()

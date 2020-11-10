@@ -1,6 +1,8 @@
 import re
 from typing import *
 
+punctuation = ['?', '!', '...', '-']
+
 
 def remove_pagination(text: str,) -> str:
     """
@@ -32,7 +34,8 @@ def is_dialog(text: str,) -> str:
         bool: True if the text is in fact the start of a dialog.
     """
     # TODO: improve me, I'm sketchy af.
-    if text.isupper() and not text.endswith(":"):
+    if text.isupper() and not text.endswith(":") \
+            and not any([p in text for p in punctuation]):
         return True
 
     return False

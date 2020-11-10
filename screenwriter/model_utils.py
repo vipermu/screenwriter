@@ -1,4 +1,5 @@
 import random
+import torch
 from typing import *
 
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
@@ -9,9 +10,9 @@ def generate_sentences(
     tokenizer: GPT2Tokenizer,
     top_k: int = 50,
     top_p: float = 0.95,
-    max_length: int = 200,
+    max_length: int = 512,
     num_return_sequences: int = 1,
-    prompt_tokens: str = None
+    prompt_tokens: torch.Tensor = None
 ) -> List[str]:
     if prompt_tokens is None:
         prompt_tokens =  random.randint(1,30000)
@@ -21,8 +22,8 @@ def generate_sentences(
         do_sample=True,
         top_k=50,
         top_p=0.95,
-        max_length=max_length,
-        num_return_sequences=1
+        max_length=len(prompt_tokens) + max_length,
+        num_return_sequences=num_return_sequences
     )
 
     sentence_list = []
