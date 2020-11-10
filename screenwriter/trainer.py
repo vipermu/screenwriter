@@ -85,7 +85,7 @@ for epoch in range(args.num_epochs):
         outputs = model(data_batch, labels=data_batch)
         loss, _logits = outputs[:2]
 
-        # loss /= args.num_grad_accum
+        loss /= args.num_grad_accum
         loss.backward()
 
         if iteration % args.num_grad_accum == 0:
