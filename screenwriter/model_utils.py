@@ -22,18 +22,18 @@ def generate_sentences(
         do_sample=True,
         top_k=50,
         top_p=0.95,
-        max_length=len(prompt_tokens) + max_length,
+        max_length=prompt_tokens.shape[1] + max_length,
         num_return_sequences=num_return_sequences
     )
 
     sentence_list = []
     for idx, sample_output in enumerate(sample_outputs):
         input_sentence = tokenizer.decode(
-            prompt_tokens,
+            prompt_tokens[0],
             skip_special_tokens=True,
         )
         generated_sentence = tokenizer.decode(
-            sample_output[len(prompt_tokens):],
+            sample_output[prompt_tokens.shape[1]:],
             skip_special_tokens=True,
         )
 
