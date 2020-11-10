@@ -29,7 +29,7 @@ def generate_sentences(
     sentence_list = []
     for idx, sample_output in enumerate(sample_outputs):
         input_sentence = tokenizer.decode(
-            prompt_tokens[0],
+            prompt_tokens[0][0:max_length],
             skip_special_tokens=True,
         )
         generated_sentence = tokenizer.decode(
