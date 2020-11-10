@@ -22,7 +22,14 @@
             "console": "integratedTerminal",
             "env": {
                 "PYTHONPATH": "."
-            }
+            },
+            "args": [
+                "--model_name", "gpt2-medium",
+                "--batch_size", "5",
+                "--num_grad_accum", "1",
+                // "--metrics_freq", "32",
+                // "--learning_rate", "1e-06",
+            ]
         }
     ]
 }
