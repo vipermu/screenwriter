@@ -28,12 +28,17 @@ def generate_sentences(
 
     sentence_list = []
     for idx, sample_output in enumerate(sample_outputs):
-        sentence = tokenizer.decode(
-            sample_output,
+        input_sentence = tokenizer.decode(
+            prompt_tokens,
+            skip_special_tokens=True,
+        )
+        generated_sentence = tokenizer.decode(
+            sample_output[len(prompt_tokens):],
             skip_special_tokens=True,
         )
 
-        sentence = f"\n{sentence}"
+        sentence = (f"\n\nINPUT:\n\n{input_sentence}"
+                    f"\n\nGENERATION:\n\n{generated_sentence}")
         sentence_list.append(sentence)
 
     return sentence_list
