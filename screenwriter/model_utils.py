@@ -10,7 +10,7 @@ def generate_sentences(
     tokenizer: GPT2Tokenizer,
     top_k: int = 50,
     top_p: float = 0.95,
-    max_length: int = 512,
+    max_length: int = 128,
     num_return_sequences: int = 1,
     prompt_tokens: torch.Tensor = None
 ) -> List[str]:
@@ -18,11 +18,11 @@ def generate_sentences(
         prompt_tokens =  random.randint(1,30000)
 
     sample_outputs = model.generate(
-        input_ids=prompt_tokens,
+        input_ids=prompt_tokens[:, 0:max_length],
         do_sample=True,
         top_k=50,
         top_p=0.95,
-        max_length=prompt_tokens.shape[1] + max_length,
+        max_length=max_length*2,
         num_return_sequences=num_return_sequences
     )
 
@@ -33,7 +33,7 @@ def generate_sentences(
             skip_special_tokens=True,
         )
         generated_sentence = tokenizer.decode(
-            sample_output[prompt_tokens.shape[1]:],
+            sample_output[max_length:],
             skip_special_tokens=True,
         )
 
