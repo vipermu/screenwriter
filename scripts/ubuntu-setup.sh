@@ -1,5 +1,6 @@
 # NVIDIA DRIVERS INSTALLATION
 sudo apt install nvidia-driver-390
+sudo apt install nvidia-cuda-toolkit
 
 # DOCKER INSTALLATION
 # source: https://docs.docker.com/engine/install/ubuntu/
