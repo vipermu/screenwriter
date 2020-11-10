@@ -104,7 +104,7 @@ for epoch in range(args.num_epochs):
 
             model.eval()
 
-            if prompt_tokens is None:
+            if args.prompt == "":
                 prompt_tokens = data_batch[0][None]
 
             sentence_list = generate_sentences(
