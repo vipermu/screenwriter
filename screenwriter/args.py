@@ -46,31 +46,31 @@ def get_args():
     parser.add_argument(
         "--num_warmup_steps",
         type=int,
-        default=5000,
+        default=2500,
         help="Number of warmup steps.",
     )
     parser.add_argument(
         "--batch_size",
         type=int,
-        default=16,
+        default=1,
         help="Batch size.",
     )
     parser.add_argument(
         "--num_grad_accum",
         type=int,
-        default=2,
+        default=4,
         help="Steps at what metrics are stored.",
     )
     parser.add_argument(
         "--metrics_freq",
         type=int,
-        default=200,
+        default=500,
         help="Steps at what metrics are stored.",
     )
     parser.add_argument(
         "--saving_freq",
         type=int,
-        default=1000,
+        default=2000,
         help="Iters frequency at which models are stored.",
     )
     parser.add_argument(
