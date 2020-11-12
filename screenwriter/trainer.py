@@ -92,15 +92,10 @@ for epoch in range(args.num_epochs):
             optimizer.step()
             scheduler.step()
             optimizer.zero_grad()
-            # model.zero_grad()
+            model.zero_grad()
 
-        if iteration % args.metrics_freq == 0:
-            logger.info("\n\n")
+        if iteration % args.generation_freq == 0:
             logger.info(f"ITERATION: {iteration}")
-
-            loss_float = float(loss.data.cpu()) * args.num_grad_accum
-            logger.info(f"LOSS: {loss_float}")
-            writer.add_scalar("Loss/train", loss_float, iteration)
 
             model.eval()
 
@@ -118,15 +113,20 @@ for epoch in range(args.num_epochs):
 
             model.train()
 
-            logger.info("\n\n")
 
-        iteration = iteration + 1
+        if iteration % args.metrics_freq == 0:
+            logger.info(f"ITERATION: {iteration}")
+
+            loss_float = float(loss.data.cpu()) * args.num_grad_accum
+            logger.info(f"LOSS: {loss_float}")
+            writer.add_scalar("Loss/train", loss_float, iteration)
+
 
         if iteration % args.saving_freq == 0:
             model_save_dir = os.path.join(args.save_dir, f"{epoch}_{iteration}")
             model.save_pretrained(model_save_dir)
-            logger.info("\n\n")
-            logger.info("Model saved!")
-            logger.info("\n\n")
+            logger.info(f"Model saved in {model_save_dir}")
+        
+        iteration = iteration + 1
 
 writer.close()

@@ -46,7 +46,7 @@ def get_args():
     parser.add_argument(
         "--num_warmup_steps",
         type=int,
-        default=2500,
+        default=100,
         help="Number of warmup steps.",
     )
     parser.add_argument(
@@ -64,13 +64,19 @@ def get_args():
     parser.add_argument(
         "--metrics_freq",
         type=int,
-        default=500,
+        default=1,
+        help="Steps at what metrics are stored.",
+    )
+    parser.add_argument(
+        "--generation_freq",
+        type=int,
+        default=1000,
         help="Steps at what metrics are stored.",
     )
     parser.add_argument(
         "--saving_freq",
         type=int,
-        default=2000,
+        default=5000,
         help="Iters frequency at which models are stored.",
     )
     parser.add_argument(
