@@ -28,7 +28,7 @@ class ScreenwriterData(torch.utils.data.Dataset):
 
         self.block_token_list = []
         for txt_file_path in txt_file_path_list:
-            if not 'test' in txt_file_path:
+            if 'test' in txt_file_path:
                 continue
 
             pkl_filename = txt_file_path.split("/")[-1].split(".")[-2] + "-tokens.pkl"
