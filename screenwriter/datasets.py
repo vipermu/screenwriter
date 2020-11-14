@@ -8,7 +8,8 @@ import torch
 from tqdm import tqdm
 from transformers import GPT2Tokenizer
 
-from screenwriter.data_utils import remove_pagination, is_dialog
+from screenwriter.data_utils import remove_pagination, is_dialog,\
+    remove_manual_conds
 
 logger = logging.getLogger("screenwriter.datasets")
 
@@ -27,7 +28,7 @@ class ScreenwriterData(torch.utils.data.Dataset):
 
         self.block_token_list = []
         for txt_file_path in txt_file_path_list:
-            if 'test' in txt_file_path:
+            if not 'test' in txt_file_path:
                 continue
 
             pkl_filename = txt_file_path.split("/")[-1].split(".")[-2] + "-tokens.pkl"
@@ -111,6 +112,9 @@ class ScreenwriterData(torch.utils.data.Dataset):
 
                     processed_extra_line = self.process_line(extra_line)
 
+                    if is_dialog(processed_extra_line):
+                        processed_extra_line = f"\n{processed_extra_line} \n"
+
                     if processed_extra_line != "":
                         processed_line += f" {processed_extra_line}"
                     else:
@@ -137,6 +141,7 @@ class ScreenwriterData(torch.utils.data.Dataset):
         """
         processed_line = line.strip()
         processed_line = remove_pagination(processed_line)
+        processed_line = remove_manual_conds(processed_line)
 
         return processed_line
 

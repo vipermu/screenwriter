@@ -21,6 +21,32 @@ def remove_pagination(text: str,) -> str:
 
     return processed_text
 
+def remove_manual_conds(text: str,) -> str:
+    """
+    Removes sentences that match the ones hardcoded in this function.
+
+    Args:
+        text (str): text to processs.
+
+    Returns:
+        str: processed text.
+    """
+    blacklist_list = [
+        "continue", 
+        "continue:", 
+        "(continue)", 
+        "continued", 
+        "continued:", 
+        "(continued)", 
+        "cut to:",
+        ]
+
+    blacklist_cond = text.lower() in blacklist_list
+
+    if blacklist_cond:
+        return ""
+    else:
+        return text
 
 def is_dialog(text: str,) -> str:
     """
@@ -33,9 +59,13 @@ def is_dialog(text: str,) -> str:
     Returns:
         bool: True if the text is in fact the start of a dialog.
     """
+    parenthesis_cond = text.startswith("(") and text.endswith(")")
+
     # TODO: improve me, I'm sketchy af.
-    if text.isupper() and not text.endswith(":") \
-            and not any([p in text for p in punctuation]):
+    if text.isupper() \
+            and not text.endswith(":") \
+            and not any([p in text for p in punctuation]) \
+            or parenthesis_cond:
         return True
 
     return False

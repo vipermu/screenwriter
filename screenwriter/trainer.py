@@ -125,6 +125,7 @@ for epoch in range(args.num_epochs):
         if iteration % args.saving_freq == 0:
             model_save_dir = os.path.join(args.save_dir, f"{epoch}_{iteration}")
             model.save_pretrained(model_save_dir)
+            tokenizer.save_pretrained(model_save_dir)
             logger.info(f"Model saved in {model_save_dir}")
         
         iteration = iteration + 1
