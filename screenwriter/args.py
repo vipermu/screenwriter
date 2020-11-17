@@ -25,6 +25,12 @@ def get_args():
         help="Directory where models will be stored",
     )
     parser.add_argument(
+        "--gen_log_file",
+        type=str,
+        default="./screenwriter/train_generations.txt",
+        help="File where training generations will be stored.",
+    )
+    parser.add_argument(
         "--num_epochs",
         type=int,
         default=100,
@@ -46,7 +52,7 @@ def get_args():
     parser.add_argument(
         "--num_warmup_steps",
         type=int,
-        default=100,
+        default=10000,
         help="Number of warmup steps.",
     )
     parser.add_argument(
@@ -58,13 +64,13 @@ def get_args():
     parser.add_argument(
         "--num_grad_accum",
         type=int,
-        default=4,
+        default=16,
         help="Steps at what metrics are stored.",
     )
     parser.add_argument(
         "--metrics_freq",
         type=int,
-        default=1,
+        default=10,
         help="Steps at what metrics are stored.",
     )
     parser.add_argument(
@@ -72,6 +78,12 @@ def get_args():
         type=int,
         default=1000,
         help="Steps at what metrics are stored.",
+    )
+    parser.add_argument(
+        "--generation_limit",
+        type=int,
+        default=256,
+        help="Maximum number of tokens for each generation.",
     )
     parser.add_argument(
         "--saving_freq",

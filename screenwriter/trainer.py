@@ -33,7 +33,7 @@ args = get_args()
 logger.info(json.dumps(args.__dict__, indent=2))
 logger.info((
     f"Training in '{device}' "
-    f"with {num_gpu} GPU{'s'*(num_gpu > 1)} " 
+    f"with {num_gpu} GPU{'s'*(num_gpu > 1)} "
     f"and mix precision is set to '{args.use_fp16}'"
 ))
 
@@ -106,28 +106,29 @@ for epoch in range(args.num_epochs):
                 model=model,
                 tokenizer=tokenizer,
                 prompt_tokens=prompt_tokens,
+                max_length=args.generation_limit,
             )
 
             for sentence_idx, sentence in enumerate(sentence_list):
                 logger.info(f"SENTENCE {sentence_idx}: {sentence}")
+                
+                with open(args.gen_log_file, 'a') as f:
+                    f.write(sentence)
 
             model.train()
 
-
         if iteration % args.metrics_freq == 0:
             logger.info(f"ITERATION: {iteration}")
-
             loss_float = float(loss.data.cpu()) * args.num_grad_accum
             logger.info(f"LOSS: {loss_float}")
             writer.add_scalar("Loss/train", loss_float, iteration)
 
-
         if iteration % args.saving_freq == 0:
-            model_save_dir = os.path.join(args.save_dir, f"{epoch}_{iteration}")
-            model.save_pretrained(model_save_dir)
-            tokenizer.save_pretrained(model_save_dir)
-            logger.info(f"Model saved in {model_save_dir}")
-        
+            out_model_dir = os.path.join(args.save_dir, f"{epoch}_{iteration}")
+            model.save_pretrained(out_model_dir)
+            tokenizer.save_pretrained(out_model_dir)
+            logger.info(f"Model saved in {out_model_dir}")
+
         iteration = iteration + 1
 
 writer.close()
