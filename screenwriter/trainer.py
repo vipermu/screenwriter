@@ -34,7 +34,6 @@ logger.info(json.dumps(args.__dict__, indent=2))
 logger.info((
     f"Training in '{device}' "
     f"with {num_gpu} GPU{'s'*(num_gpu > 1)} "
-    f"and mix precision is set to '{args.use_fp16}'"
 ))
 
 writer = SummaryWriter(log_dir=args.log_dir)
@@ -49,8 +48,6 @@ model = GPT2LMHeadModel.from_pretrained(
 )
 model = model.to(device)
 model.train()
-if args.use_fp16 and device == "cuda":
-    model.half()
 
 dataset = ScreenwriterData(
     tokenizer,
@@ -71,6 +68,8 @@ scheduler = get_linear_schedule_with_warmup(
     num_training_steps=-1,
 )
 
+scaler = torch.cuda.amp.GradScaler()
+
 prompt_tokens = None
 if args.prompt != "":
     prompt_tokens = tokenizer.encode(args.prompt, return_tensors="pt")
@@ -82,17 +81,23 @@ for epoch in range(args.num_epochs):
 
     for data_batch in data_loader:
         data_batch = data_batch.to(device)
-        outputs = model(data_batch, labels=data_batch)
-        loss, _logits = outputs[:2]
 
-        loss /= args.num_grad_accum
-        loss.backward()
+        with torch.cuda.amp.autocast():
+            outputs = model(data_batch, labels=data_batch)
+
+            loss, _logits = outputs[:2]
+
+            loss /= args.num_grad_accum
+        
+        scaler.scale(loss).backward()
+        # loss.backward()
 
         if iteration % args.num_grad_accum == 0:
-            optimizer.step()
+            scaler.step(optimizer)
+            scaler.update()
+            # optimizer.step()
             scheduler.step()
             optimizer.zero_grad()
-            model.zero_grad()
 
         if iteration % args.generation_freq == 0:
             logger.info(f"ITERATION: {iteration}")

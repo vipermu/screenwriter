@@ -92,14 +92,6 @@ def get_args():
         help="Iters frequency at which models are stored.",
     )
     parser.add_argument(
-        "--use_fp16",
-        type=str2bool,
-        nargs='?',
-        const=True,
-        default=True,
-        help="If True, the model trains with mixed precision.",
-    )
-    parser.add_argument(
         "--recompute_data",
         type=str2bool,
         nargs='?',
