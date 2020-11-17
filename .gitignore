@@ -7,3 +7,4 @@ scraper/extracted-data/*
 screenwriter/data/*
 screenwriter/checkpoints/*
 screenwriter/tensorboard-logs/*
+screenwriter/*.txt
