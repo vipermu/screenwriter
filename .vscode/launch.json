@@ -25,10 +25,13 @@
             },
             "args": [
                 "--model_name", "gpt2-medium",
-                "--batch_size", "5",
+                // "--model_name", "./screenwriter/checkpoints/0_1",
+                "--batch_size", "1",
                 "--num_grad_accum", "1",
-                // "--metrics_freq", "32",
-                // "--learning_rate", "1e-06",
+                "--metrics_freq", "1",
+                "--generation_freq", "1",
+                // "--saving_freq", "1",
+                // "--recompute_data", "True",
             ]
         }
     ]
