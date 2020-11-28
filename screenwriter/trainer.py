@@ -10,8 +10,8 @@ from torch.utils.tensorboard import SummaryWriter
 from quoters import Quote
 
 from screenwriter.datasets import ScreenwriterData
-from screenwriter.model_utils import generate_sentences
-from screenwriter.args import get_args
+from screenwriter.generate_utils import generate_sentences
+from screenwriter.args import get_train_args
 
 
 logging.basicConfig(
@@ -28,7 +28,7 @@ else:
     device = 'cpu'
     num_gpu = 0
 
-args = get_args()
+args = get_train_args()
 
 logger.info(json.dumps(args.__dict__, indent=2))
 logger.info((
