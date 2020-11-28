@@ -91,7 +91,6 @@ for epoch in range(args.num_epochs):
             loss /= args.num_grad_accum
         
         scaler.scale(loss).backward()
-        # loss.backward()
 
         if iteration % args.num_grad_accum == 0:
             scaler.step(optimizer)
