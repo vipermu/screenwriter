@@ -5,6 +5,21 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Generate",
+            "type": "python",
+            "request": "launch",
+            "program": "screenwriter/generate.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "env": {
+                "PYTHONPATH": "."
+            },
+            "args": [
+                "--model_name", "gpt2-medium",
+                // "--model_name", "./screenwriter/checkpoints/9_65000",
+            ]
+        },
+        {
             "name": "Python: Current File",
             "type": "python",
             "request": "launch",
