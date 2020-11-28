@@ -19,7 +19,6 @@ def generate_sentences(
     
     if prompt_tokens.shape[1] > max_length:
         prompt_tokens = prompt_tokens[:, 0:max_length]
-
     
     sample_outputs = model.generate(
         input_ids=prompt_tokens,
