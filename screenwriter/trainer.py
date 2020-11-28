@@ -45,6 +45,7 @@ logger.info(f"Loading model from {args.model_name}...")
 model = GPT2LMHeadModel.from_pretrained(
     args.model_name,
     pad_token_id=tokenizer.eos_token_id,
+    gradient_checkpointing=True,
 )
 model = model.to(device)
 model.train()
