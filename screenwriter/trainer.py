@@ -102,7 +102,6 @@ for epoch in range(args.num_epochs):
         if iteration % args.generation_freq == 0:
             logger.info(f"ITERATION: {iteration}")
 
-            model.eval()
 
             if args.prompt == "":
                 prompt_tokens = data_batch[0][None]
