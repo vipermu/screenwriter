@@ -20,14 +20,16 @@
             "request": "launch",
             "program": "screenwriter/trainer.py",
             "console": "integratedTerminal",
+            "justMyCode": false,
             "env": {
                 "PYTHONPATH": "."
             },
             "args": [
-                "--model_name", "gpt2-medium",
-                // "--model_name", "./screenwriter/checkpoints/0_1",
-                "--batch_size", "1",
-                "--num_grad_accum", "1",
+                // "--model_name", "gpt2-medium",
+                "--model_name",
+                "./screenwriter/checkpoints/9_65000",
+                "--batch_size", "2",
+                "--num_grad_accum", "16",
                 "--metrics_freq", "1",
                 "--generation_freq", "1",
                 // "--saving_freq", "1",
