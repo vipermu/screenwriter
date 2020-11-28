@@ -1,15 +1,14 @@
-name: script
+name: script-app
 channels:
   - anaconda
   - defaults
   - conda-forge
+  - pytorch
 dependencies:
-  - beautifulsoup4=4.9.1
-  - requests=2.24.0
   - python=3.8.5
   - pip=20.2.4
   - transformers=3.1.0
+  - pytorch=1.7.0
+  - streamlit=0.71.0
   - pip:
-      - lxml==4.5.2
       - str2bool==1.1
-      - quoters==0.7

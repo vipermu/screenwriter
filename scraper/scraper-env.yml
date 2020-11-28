@@ -1,0 +1,13 @@
+name: script-scraper
+channels:
+  - anaconda
+  - defaults
+  - conda-forge
+dependencies:
+  - beautifulsoup4=4.9.1
+  - requests=2.24.0
+  - python=3.8.5
+  - pip=20.2.4
+  - pip:
+      - lxml==4.5.2
+      - str2bool==1.1
