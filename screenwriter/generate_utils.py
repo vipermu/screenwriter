@@ -15,11 +15,11 @@ def generate_sentences(
     prompt_tokens: torch.Tensor = None
 ) -> List[str]:
     if prompt_tokens is None:
-        prompt_tokens =  torch.tensor(random.randint(1,30000))[None, None]
-    
+        prompt_tokens = torch.tensor(random.randint(1, 30000))[None, None]
+
     if prompt_tokens.shape[1] > max_length:
         prompt_tokens = prompt_tokens[:, 0:max_length]
-    
+
     sample_outputs = model.generate(
         input_ids=prompt_tokens,
         do_sample=True,
@@ -50,3 +50,26 @@ def generate_sentences(
         sentence_list.append(sentence)
 
     return sentence_list
+
+
+def predict_token(
+    probs: torch.Tensor,
+    k: int = 50,
+    p: float = 0.95,
+):
+    top_token_probs, top_tokens = torch.topk(probs, k, dim=-1)
+
+    top_p = k
+    accum_prob = 0
+    for idx in range(top_token_probs.shape[1]):
+        accum_prob += top_token_probs[:, idx]
+        if accum_prob >= p:
+            top_p = idx
+
+    selected_idx = int(torch.multinomial(
+        top_token_probs[:top_p],
+        num_samples=1),
+    )
+    selected_token = top_tokens[:, selected_idx].unsqueeze(0)
+
+    return selected_token
